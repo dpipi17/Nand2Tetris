@@ -12,3 +12,59 @@
 // the screen should remain fully clear as long as no key is pressed.
 
 // Put your code here.
+
+
+//	while(true) {
+//		setbits = 0
+//		if M[KBD] == 0:
+//			setbits = -1
+//		
+//		for (i = SCREEN; i < KBD; i++) {
+//			M[i] = setbits
+//		}
+//	}
+
+
+
+(WHILETRUE)
+@setbits
+M=-1  // setbits = -1
+
+@KBD
+D=M   
+@POSITIVE
+D; JGT   // if kbd_value > 0 jmp to positive
+
+@setbits
+M=0   // setbits = 0
+
+(POSITIVE)
+@SCREEN
+D=A
+@i	// i = SCREEN
+M=D
+
+(LOOP)
+@i
+D=M	
+@KBD
+D=D-A	// temp = i - KBD
+
+@LOOPEND
+D;JEQ  // if temp == 0 jump to LOOPEND
+
+@setbits
+D=M
+@i
+A=M	
+M=D	//M[i] = setbits
+
+@i
+M=M+1  // i++
+
+@LOOP
+0; JMP // jump to LOOP
+(LOOPEND)
+
+@WHILETRUE
+0;JMP
