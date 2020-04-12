@@ -39,5 +39,34 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+        Mux16(a=instruction, b=aluOutput, sel=instruction[15], out=aRegisterMux);
+
+        Not(in=instruction[15], out=notOpcode);
+        Or(a=instruction[5], b=notOpcode, out=aRegisterControlBit);
+        ARegister(in=aRegisterMux, load=aRegisterControlBit, out[0..14]=addressM, out=aRegisterRes);
+
+        And(a=instruction[4], b=instruction[15], out=DRegisterControlBit);
+        DRegister(in=aluOutput, load=DRegisterControlBit, out=DRegisterRes);
+
+        And(a=instruction[12], b=instruction[15], out=muxControlBit);
+        Mux16(a=aRegisterRes, b=inM, sel=muxControlBit, out=muxIntoAlu);
+
+        And(a=instruction[3],b=instruction[15],out=writeM);
+
+        ALU(x=DRegisterRes, y=muxIntoAlu, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM, out=aluOutput, zr=isZero, ng=isNeg);
+
+        Or(a=isZero, b=isNeg, out=isZeroOrIsNeg);
+        Not(in=isZeroOrIsNeg, out=positive);
+
+        And(a=instruction[0],b=instruction[15],out=jgt);
+        And(a=positive, b=jgt, out=pcLoadFirst);
+
+        And(a=instruction[1], b=instruction[15], out=jeq);
+        And(a=isZero, b=jeq, out=pcLoadSecond);
+
+        And(a=instruction[2], b=instruction[15], out=jlt);
+        And(a=isNeg, b=jlt, out=pcLoadThird);
+
+        Or8Way(in[0]=pcLoadFirst, in[1]=pcLoadSecond, in[2]=pcLoadThird, out=pcLoad);    
+        PC(in=aRegisterRes, load=pcLoad, inc=true, reset=reset, out[0..14]=pc);
 }
