@@ -14,7 +14,7 @@ set RAM[134] 1,
 set RAM[164] 1,
 set RAM[165] 1,
 set RAM[166] 1,
-repeat 15000000 {
+repeat 25000000 {
   ticktock;
 }
 output;

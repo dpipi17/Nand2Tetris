@@ -30,6 +30,8 @@
 // temp_arr_end = temp_arr_base + matrix_size
 // base_diff = temp_arr_base - arr_base
 
+// JMP to (DRAWLOOPSTART)
+
 // MAINLOOP:
 // 	if main_loop_counter > iterations JMP to MAINLOOPEND	
 
@@ -125,6 +127,48 @@
 
 
 // 	main_loop_counter = main_loop_counter + 1
+// -------------------------------------SECOND PART------------------------------------
+
+// screen_index = SCREEN
+// screen_raw_counter = 0
+// arr_index_for_screen = 0
+
+// SCREENLOOP:
+// if screen_index >= KBD JMP to SCREENLOOPEND
+
+// matrix_index = arr_index_for_screen + arr_base
+
+// set_bit = -1
+// if (M[matrix_index] == 0) {
+//     set_bit = 0
+// }
+
+
+// temp_screen_index = screen_index
+
+// temp_screen_index_i = 0
+// TEMPSCREENINDEXLOOP:
+//     if temp_screen_index_i > 15 JMP to TEMPSCREENINDEXLOOPEND
+
+//     M[temp_screen_index] = set_bit
+//     temp_screen_index += 32
+//     temp_screen_index_i += 1
+
+//     JMP to TEMPSCREENINDEXLOOP
+// (TEMPSCREENINDEXLOOPEND)
+
+// screen_index += 1
+// screen_raw_counter += 1
+
+// if (screen_raw_counter == 32) {
+//     screen_raw_counter = 0
+//     screen_index += 480
+// }
+// arr_index_for_screen += 1
+// JMP to SCREENLOOP
+// (SCREENLOOPEND)
+
+// --------------------------------------------------------------------
 // 	JMP to MAINLOOP
 
 // MAINLOOPEND
@@ -189,6 +233,10 @@ D=M
 D=D-M
 @base_diff
 M=D
+
+// JMP to (DRAWLOOPSTART)
+@DRAWLOOPSTART
+0; JMP
 
 // MAINLOOP:
 (MAINLOOP)
@@ -585,6 +633,143 @@ M=M+1
 // main_loop_counter = main_loop_counter + 1
 @main_loop_counter
 M=M+1
+
+// -------------------------------------SECOND PART------------------------------------
+(DRAWLOOPSTART)
+// screen_index = SCREEN
+@SCREEN
+D=A 
+@screen_index
+M=D
+
+// screen_raw_counter = 0
+@screen_raw_counter
+M=0
+
+// arr_index_for_screen = 0
+@arr_index_for_screen
+M=0
+
+// SCREENLOOP:
+(SCRENLOOP)
+
+// if screen_index >= KBD JMP to SCREENLOOPEND
+@screen_index
+D=M 
+@KBD
+D=D-A 
+@SCRENLOOPEND
+D; JGE
+
+//matrix_index = arr_index_for_screen + arr_base
+@arr_index_for_screen
+D=M 
+@arr_base
+D=D+M 
+@matrix_index
+M=D 
+
+// set_bit = -1
+@set_bit
+M=-1
+
+// if (M[matrix_index] == 0) {
+@matrix_index
+D=M 
+A=D 
+D=M
+@MATRIXINDEXCHECK
+D; JNE
+
+// set_bit = 0
+@set_bit
+M=0
+
+(MATRIXINDEXCHECK)
+
+// temp_screen_index = screen_index
+@screen_index
+D=M
+@temp_screen_index
+M=D
+
+// temp_screen_index_i = 0 
+@temp_screen_index_i
+M=0
+
+// TEMPSCREENINDEXLOOP:
+(TEMPSCRENINDEXLOOP)
+
+// if temp_screen_index_i > 15 JMP to TEMPSCREENINDEXLOOPEND
+@temp_screen_index_i
+D=M 
+@15 
+D=D-A 
+@TEMPSCRENINDEXLOOPEND
+D; JGT
+
+// M[temp_screen_index] = set_bit
+@set_bit
+D=M 
+@temp_screen_index
+A=M
+M=D 
+
+// temp_screen_index += 32
+@32
+D=A 
+@temp_screen_index
+M=M+D
+
+// temp_screen_index_i += 1
+@temp_screen_index_i
+M=M+1
+
+// JMP to TEMPSCREENINDEXLOOP
+@TEMPSCRENINDEXLOOP
+0; JMP
+
+(TEMPSCRENINDEXLOOPEND)
+
+// screen_index += 1
+@screen_index
+M=M+1
+
+// screen_raw_counter += 1
+@screen_raw_counter
+M=M+1
+
+// if (screen_raw_counter == 32) {
+@screen_raw_counter
+D=M 
+@32
+D=D-A
+@SCRENRAWCOUNTERNEQ32 
+D; JNE
+
+// screen_raw_counter = 0
+@screen_raw_counter
+M=0
+
+//  screen_index += 480
+@480
+D=A
+@screen_index
+M=M+D
+
+(SCRENRAWCOUNTERNEQ32)
+
+// arr_index_for_screen += 1
+@arr_index_for_screen
+M=M+1
+
+// JMP to SCREENLOOP
+@SCRENLOOP
+0; JMP
+
+(SCRENLOOPEND)
+
+// -------------------------------------------------------------------------------
 
 // JMP to MAINLOOP
 @MAINLOOP
