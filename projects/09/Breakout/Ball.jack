@@ -1,0 +1,137 @@
+class Ball{
+
+	field int x, y, radius;
+	field boolean down, left;
+    field int tempX, tempY;  
+    field int vx, vy;
+	
+	constructor Ball new (int Ax, int Ay, int Aradius){
+		let radius = Aradius;
+		let x = Ax;
+		let y = Ay;
+		let down = false;
+        let left = true;
+
+        let vx = 1;
+        let vy = 1;
+
+        let tempX = x;
+        let tempY = y;
+		return this;
+	}
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+	
+	method void draw(){
+        do Screen.setColor(true);
+		do Screen.drawCircle(x, y, radius);
+		return;
+	}
+
+    	
+	method void clear(){
+        do Screen.setColor(false);
+		do Screen.drawCircle(tempX, tempY, radius);
+		return;
+	}
+	
+	method void move(){
+		do movingInWindow();
+		return;
+	}
+
+    method void setTemps(int AtempX, int AtempY) {
+        let tempX = AtempX;
+        let tempY = AtempY;
+        return;
+    }
+	
+	method void movingInWindow(){
+        
+        if ((x + radius + 1) > 512) {
+            let left = true;
+        }
+
+        if ((x - radius - 1) < 0) {
+            let left = false;
+        }
+
+        if ((y - radius - 1) < 0) {
+            let down = true;
+        }
+		
+
+        if (left) {
+            let x = x - vx;   
+        } else {
+            let x = x + vx;
+        }
+
+        if (down) {
+            let y = y + vy;
+        } else {
+            let y = y - vy;
+        }
+
+		
+		return;
+	}
+	
+	method int getX(){
+		return x;
+	}
+	
+	method int getY(){
+		return y;
+	}
+	
+	method int getRadius(){
+		return radius;
+	}
+
+    method Point getTopLeft() {
+        return Point.new(x - radius, y - radius);
+    }
+
+    method Point getTop() {
+        return Point.new(x, y - radius);
+    }
+
+    method Point getTopRight() {
+        return Point.new(x + y, y - radius);
+    }
+
+    method Point getLeft() {
+        return Point.new(x - radius, y);
+    }
+
+    method Point getRight() {
+        return Point.new(x + radius, y);
+    }
+
+    method Point getDownLeft() {
+        return Point.new(x - radius, y + radius);
+    }
+
+    method Point getDown() {
+        return Point.new(x, y + radius);
+    }
+
+    method Point getDownRight() {
+        return Point.new(x + radius, y + radius);
+    }
+	
+	method void changeHorizontalDirection(){
+		let left = ~left;
+		return;
+	}
+	
+	method void changeVerticalDirection(){
+		let down = ~down;
+		return;
+	}
+
+}

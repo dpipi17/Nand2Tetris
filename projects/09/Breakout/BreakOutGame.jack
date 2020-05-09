@@ -1,0 +1,205 @@
+class BreakOutGame {
+   
+    field Paddle paddle;        
+    field Ball ball;         
+    field boolean exit;       
+    field int score;   
+    field Array bricks;
+    field int numRows;
+    field int activeBricks;
+
+    constructor BreakOutGame new() {
+	    do Screen.clearScreen();
+        do setUp();
+        return this;
+    }
+
+    method void dispose() {
+        var int i;
+        var Brick currBrick;
+
+        do paddle.dispose();
+	    do ball.dispose();
+        
+        let i = 0;
+        while(i < (numRows * 10)) {
+            let currBrick = bricks[i];
+            do currBrick.dispose();
+        }
+
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void setUp() {
+        do initVariables();
+        do createBricks();
+		do createPaddle();
+        do createBall();
+        do drawScoreBoard();
+        return;
+    }
+
+    method void createBricks() {
+        var int currX, currY, currRow, brickWidth, brickHeight, space, index;
+        var int brickRows;
+        var Brick brick;
+        let currY = 2;
+        let currRow = 0;
+        let brickWidth = 49;
+        let space = 2;
+        let brickHeight = 15;
+        let index = 0;
+        
+
+        while (currRow < numRows) {
+            let currX = 2;
+            
+            while(currX < 500) {
+                let brick = Brick.new(currX, currY, brickWidth, brickHeight);
+                let bricks[index] = brick;
+                do brick.updateVisibity();
+                let currX = (currX + brickWidth + space);
+                let index = index + 1;
+            }
+            
+            let currY = currY + brickHeight + space;
+            let currRow = currRow + 1;
+        }
+		
+        return;
+    }
+
+    method void createBall() {
+        let ball = Ball.new(256, 128, 5);
+        do ball.draw();
+        return;
+    }
+
+    method void createPaddle() {
+        let paddle = Paddle.new(230, 229, 50, 10);
+        do paddle.draw();
+        return;
+    }
+
+    method void drawScoreBoard() {
+        do Screen.drawRectangle(0, 240, 511, 241);
+	    do Output.moveCursor(22,0);
+	    do Output.printString("Score: 0");
+        return;
+    }
+
+    method void initVariables() {
+        let exit = false;
+	    let score = 0;
+        let numRows = 4;
+        let activeBricks = numRows * 10;
+        let bricks = Array.new(activeBricks + 20);
+        return;
+    }
+
+    method void run() {
+        var char key;
+        var int i;
+        var boolean collision;
+        var Brick currBrick;
+        var int count;
+
+        let count = 0;
+
+        while (~exit) {
+            
+            let key = Keyboard.keyPressed();    
+            do ball.move();
+
+            let i = 0;
+
+            if (ball.getY() < 75) {
+                while(i < (numRows * 10)) {
+                    let currBrick = bricks[i];
+                    let collision = currBrick.checkCollision(ball);
+
+                    if (collision) {
+                        do ball.changeVerticalDirection();
+                        do ball.move();
+                        do currBrick.updateVisibity();
+                        do updateScore();
+                        if (activeBricks = 0) {
+                            let exit = true;
+                        }
+                    }
+
+                    let i = i + 1;
+                }
+            } else {
+                do Sys.wait(20);
+            }
+
+            if (key = 130) { 
+                do paddle.move(true); 
+            }
+
+            if (key = 132) { 
+                do paddle.move(false); 
+            } 
+            
+            if (key = 140) { 
+                let exit = true; 
+            }
+
+            let collision = paddle.checkCollision(ball);
+            if (collision) {
+                do ball.changeVerticalDirection();
+                do ball.move();
+            }
+
+            if ((ball.getY() + ball.getRadius() - 5) > paddle.getY()) {
+                let exit = true;
+            }
+
+            if (count = 5) {
+                do updateObjectsVisibility();
+                let count = 0;
+            }
+		        
+            let count = count + 1;
+        }
+
+        do updateObjectsVisibility();
+        do showResult();
+            
+        return;
+    }
+
+    method void updateObjectsVisibility() {
+        var int i;
+        var Brick currBrick;
+        
+        do ball.clear();
+        do ball.draw();
+        do ball.setTemps(ball.getX(), ball.getY());
+
+        do paddle.clear();
+        do paddle.draw();
+        do paddle.setTemps(paddle.getX(), paddle.getY());
+        return;
+    }
+
+    method void updateScore() {
+        let score = score + 1;
+        do Output.moveCursor(22,7);
+        do Output.printInt(score);
+        let activeBricks = activeBricks - 1;
+        return;
+    }
+
+    method void showResult() {
+        do Output.moveCursor(10,27);
+        if (activeBricks > 0) {
+	        do Output.printString("Game Over");
+        } else {
+            do Output.printString("You won");
+        }
+        return;
+    }
+}

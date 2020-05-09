@@ -1,0 +1,113 @@
+class Brick {
+
+    field int x, y;          
+    field int width, height;  
+    field boolean deleted;
+
+    constructor Brick new(int Ax, int Ay, int Awidth, int Aheight) {
+        let x = Ax;
+        let y = Ay;
+        let width = Awidth;
+        let height = Aheight;
+        let deleted = false;
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void updateVisibity() {
+        do Screen.setColor(true);
+        if (deleted) {
+            do Screen.setColor(false);
+        }
+
+        do draw();
+        return;
+    }
+
+    method void draw() {
+        do Screen.drawRectangle(x, y, x + width, y + height);
+        return;
+    }
+
+    method int getX() {
+        return x;
+    }
+
+    method int getY() {
+        return y;
+    }
+
+    method int getWidth() {
+        return width;
+    }
+
+    method int getHeight() {
+        return height;
+    }
+
+    method boolean checkCollision(Ball ball){
+		var Point p1, p2, p3, p4, p5, p6, p7, p8;
+        var boolean r1, r2, r3, r4, r5, r6, r7, r8;
+        var boolean result;
+
+		if(deleted){
+			return false;
+		}
+
+        let result = false;
+
+        let p1 = ball.getTopLeft();
+        let p2 = ball.getTop();
+        let p3 = ball.getTopRight();
+        let p4 = ball.getLeft();
+        let p5 = ball.getRight();
+        let p6 = ball.getDownLeft();
+        let p7 = ball.getDown();
+        let p8 = ball.getDownLeft();
+
+
+        let r1 = checkPointCollision(p1);
+        let r2 = checkPointCollision(p2);
+        let r3 = checkPointCollision(p3);
+        let r4 = checkPointCollision(p4);
+        let r5 = checkPointCollision(p5);
+        let r6 = checkPointCollision(p6);
+        let r7 = checkPointCollision(p7);
+        let r8 = checkPointCollision(p8);
+        
+	
+        if ((r1) | (r2) | (r3) | (r4) | (r5) | (r6) | (r7) | (r8)) {
+            let result = true;
+        }
+        
+
+        do p1.dispose();
+        do p2.dispose();
+        do p3.dispose();
+        do p4.dispose();
+        do p5.dispose();
+        do p6.dispose();
+        do p7.dispose();
+        do p8.dispose();
+
+
+        let deleted = result;
+		return result;
+	}
+
+    method boolean checkPointCollision(Point p) {
+        var int pX, pY;
+        let pX = p.getX();
+        let pY = p.getY();
+
+        if ((pY > y) & (pY < (y + height)) & (pX > x) & (pX < (x + width))) {
+            return true;
+        }
+
+        return false;
+    }
+}

@@ -1,0 +1,240 @@
+function Paddle.new 0
+push constant 7
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push argument 2
+pop this 2
+push argument 3
+pop this 3
+push this 0
+pop this 5
+push this 1
+pop this 6
+push pointer 0
+return
+function Paddle.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Paddle.draw 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 3
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Paddle.clear 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 5
+push this 6
+push this 5
+push this 2
+add
+push this 6
+push this 3
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Paddle.getX 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Paddle.getY 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Paddle.setTemps 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 5
+push argument 2
+pop this 6
+push constant 0
+return
+function Paddle.move 0
+push argument 0
+pop pointer 0
+push argument 1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 0
+push constant 4
+sub
+pop this 0
+push this 0
+push constant 0
+lt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+pop this 0
+label IF_FALSE1
+goto IF_END0
+label IF_FALSE0
+push this 0
+push constant 4
+add
+pop this 0
+push this 0
+push this 2
+add
+push constant 511
+gt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 511
+push this 2
+sub
+pop this 0
+label IF_FALSE2
+label IF_END0
+push constant 0
+return
+function Paddle.checkCollision 7
+push argument 0
+pop pointer 0
+push constant 0
+pop local 6
+push argument 1
+call Ball.getY 1
+push this 1
+sub
+push this 3
+push constant 1
+add
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push this 1
+push argument 1
+call Ball.getY 1
+sub
+push this 3
+push constant 1
+add
+gt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push argument 1
+call Ball.getDownLeft 1
+pop local 0
+push argument 1
+call Ball.getDown 1
+pop local 1
+push argument 1
+call Ball.getDownLeft 1
+pop local 2
+push pointer 0
+push local 0
+call Paddle.checkPointCollision 2
+pop local 3
+push pointer 0
+push local 1
+call Paddle.checkPointCollision 2
+pop local 4
+push pointer 0
+push local 2
+call Paddle.checkPointCollision 2
+pop local 5
+push local 3
+push local 4
+or
+push local 5
+or
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+not
+pop local 6
+label IF_FALSE2
+push local 0
+call Point.dispose 1
+pop temp 0
+push local 1
+call Point.dispose 1
+pop temp 0
+push local 2
+call Point.dispose 1
+pop temp 0
+push local 6
+return
+function Paddle.checkPointCollision 2
+push argument 0
+pop pointer 0
+push argument 1
+call Point.getX 1
+pop local 0
+push argument 1
+call Point.getY 1
+push constant 2
+add
+pop local 1
+push local 1
+push this 1
+gt
+push local 1
+push this 1
+push this 3
+add
+lt
+and
+push local 0
+push this 0
+gt
+and
+push local 0
+push this 0
+push this 2
+add
+lt
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+label IF_FALSE0
+push constant 0
+return

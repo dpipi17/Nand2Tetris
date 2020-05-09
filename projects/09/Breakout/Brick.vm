@@ -1,0 +1,234 @@
+function Brick.new 0
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push argument 2
+pop this 2
+push argument 3
+pop this 3
+push constant 0
+pop this 4
+push pointer 0
+return
+function Brick.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Brick.updateVisibity 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 4
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+label IF_FALSE0
+push pointer 0
+call Brick.draw 1
+pop temp 0
+push constant 0
+return
+function Brick.draw 0
+push argument 0
+pop pointer 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 3
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Brick.getX 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Brick.getY 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Brick.getWidth 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Brick.getHeight 0
+push argument 0
+pop pointer 0
+push this 3
+return
+function Brick.checkCollision 17
+push argument 0
+pop pointer 0
+push this 4
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push constant 0
+pop local 16
+push argument 1
+call Ball.getTopLeft 1
+pop local 0
+push argument 1
+call Ball.getTop 1
+pop local 1
+push argument 1
+call Ball.getTopRight 1
+pop local 2
+push argument 1
+call Ball.getLeft 1
+pop local 3
+push argument 1
+call Ball.getRight 1
+pop local 4
+push argument 1
+call Ball.getDownLeft 1
+pop local 5
+push argument 1
+call Ball.getDown 1
+pop local 6
+push argument 1
+call Ball.getDownLeft 1
+pop local 7
+push pointer 0
+push local 0
+call Brick.checkPointCollision 2
+pop local 8
+push pointer 0
+push local 1
+call Brick.checkPointCollision 2
+pop local 9
+push pointer 0
+push local 2
+call Brick.checkPointCollision 2
+pop local 10
+push pointer 0
+push local 3
+call Brick.checkPointCollision 2
+pop local 11
+push pointer 0
+push local 4
+call Brick.checkPointCollision 2
+pop local 12
+push pointer 0
+push local 5
+call Brick.checkPointCollision 2
+pop local 13
+push pointer 0
+push local 6
+call Brick.checkPointCollision 2
+pop local 14
+push pointer 0
+push local 7
+call Brick.checkPointCollision 2
+pop local 15
+push local 8
+push local 9
+or
+push local 10
+or
+push local 11
+or
+push local 12
+or
+push local 13
+or
+push local 14
+or
+push local 15
+or
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+pop local 16
+label IF_FALSE1
+push local 0
+call Point.dispose 1
+pop temp 0
+push local 1
+call Point.dispose 1
+pop temp 0
+push local 2
+call Point.dispose 1
+pop temp 0
+push local 3
+call Point.dispose 1
+pop temp 0
+push local 4
+call Point.dispose 1
+pop temp 0
+push local 5
+call Point.dispose 1
+pop temp 0
+push local 6
+call Point.dispose 1
+pop temp 0
+push local 7
+call Point.dispose 1
+pop temp 0
+push local 16
+pop this 4
+push local 16
+return
+function Brick.checkPointCollision 2
+push argument 0
+pop pointer 0
+push argument 1
+call Point.getX 1
+pop local 0
+push argument 1
+call Point.getY 1
+pop local 1
+push local 1
+push this 1
+gt
+push local 1
+push this 1
+push this 3
+add
+lt
+and
+push local 0
+push this 0
+gt
+and
+push local 0
+push this 0
+push this 2
+add
+lt
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+label IF_FALSE0
+push constant 0
+return
